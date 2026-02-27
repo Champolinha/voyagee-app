@@ -1,6 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { fetchNearbyPlaces } from '../utils/helpers';
+import { Loader2, Compass, Globe, ArrowLeft, Utensils, Coffee, Landmark, Trees, TowerControl, ShoppingBag, MapPin } from 'lucide-react';
+
+const ICON_MAP = {
+    restaurant: Utensils,
+    cafe: Coffee,
+    museum: Landmark,
+    park: Trees,
+    landmark: TowerControl,
+    shopping: ShoppingBag,
+    location: MapPin
+};
+
+function CategoryIcon({ id, size = 18, className = "" }) {
+    const Icon = ICON_MAP[id] || ICON_MAP.location;
+    return <Icon size={size} className={className} />;
+}
 
 export default function ExplorePage() {
     const navigate = useNavigate();
@@ -16,12 +32,12 @@ export default function ExplorePage() {
     const fetchIdRef = useRef(0);
 
     const categories = [
-        { id: 'restaurant', label: 'Gastronomia', emoji: '🍽️', color: '#ea580c' },
-        { id: 'cafe', label: 'Cafés', emoji: '☕', color: '#92400e' },
-        { id: 'museum', label: 'Cultura', emoji: '🏛️', color: '#7c3aed' },
-        { id: 'park', label: 'Parques', emoji: '🌳', color: '#15803d' },
-        { id: 'landmark', label: 'Pontos Turísticos', emoji: '🗼', color: '#1d4ed8' },
-        { id: 'shopping', label: 'Compras', emoji: '🛍️', color: '#be185d' },
+        { id: 'restaurant', label: 'Gastronomia', icon: 'restaurant', color: '#ea580c' },
+        { id: 'cafe', label: 'Cafés', icon: 'cafe', color: '#92400e' },
+        { id: 'museum', label: 'Cultura', icon: 'museum', color: '#7c3aed' },
+        { id: 'park', label: 'Parques', icon: 'park', color: '#15803d' },
+        { id: 'landmark', label: 'Pontos Turísticos', icon: 'landmark', color: '#1d4ed8' },
+        { id: 'shopping', label: 'Compras', icon: 'shopping', color: '#be185d' },
     ];
 
     // 1. Fetch location once and store in state
@@ -89,8 +105,8 @@ export default function ExplorePage() {
         <div className="home-layout" style={{ display: 'flex', flexDirection: 'column' }}>
             <header className="home-header" style={{ paddingBottom: 'var(--space-2)', zIndex: 100 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                    <button className="icon-btn" onClick={() => navigate(-1)} style={{ cursor: 'pointer' }}>
-                        <span className="material-symbols-outlined">arrow_back</span>
+                    <button className="icon-btn" onClick={() => navigate(-1)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <ArrowLeft size={20} />
                     </button>
                     <div>
                         <p className="home-welcome" style={{ marginBottom: 0 }}>Arredores</p>
@@ -136,7 +152,7 @@ export default function ExplorePage() {
                                 pointerEvents: 'auto'
                             }}
                             onClick={() => handleFilterClick(cat.id)}>
-                            <span style={{ fontSize: '1rem' }}>{cat.emoji}</span>
+                            <CategoryIcon id={cat.icon} size={18} />
                             <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{cat.label}</span>
                         </button>
                     ))}
@@ -146,13 +162,15 @@ export default function ExplorePage() {
             <main className="home-main hide-scrollbar" style={{ zIndex: 10 }}>
                 {loading ? (
                     <div className="empty-state">
-                        <div className="spinner" style={{ fontSize: '2rem', marginBottom: 'var(--space-4)' }}>🔄</div>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-4)' }}>
+                            <Loader2 size={48} className="text-primary-500 spinner" />
+                        </div>
                         <h3 className="empty-state-title">Buscando locais...</h3>
                         <p className="empty-state-text">Localizando os melhores pontos perto de você</p>
                     </div>
                 ) : places.length === 0 ? (
                     <div className="empty-state">
-                        <div className="empty-state-icon">🧭</div>
+                        <div className="empty-state-icon"><Compass size={48} className="text-primary-400" /></div>
                         <h3 className="empty-state-title">Nenhum local encontrado</h3>
                         <p className="empty-state-text">Não conseguimos achar locais próximos nesta categoria.</p>
                     </div>
@@ -257,11 +275,9 @@ export default function ExplorePage() {
                             <button className="icon-btn" onClick={() => setSelectedPlace(null)} style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: 'rgba(255,255,255,0.8)', color: '#0A1128', cursor: 'pointer' }}>✕</button>
                         </div>
                         <div style={{ padding: 'var(--space-6)' }}>
-                            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                                <span className="badge" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(0,0,0,0.05)', color: categories.find(c => c.id === selectedPlace.type)?.color }}>
-                                    {categories.find(c => c.id === selectedPlace.type)?.emoji} {categories.find(c => c.id === selectedPlace.type)?.label}
-                                </span>
-                            </div>
+                            <span className="badge" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(0,0,0,0.05)', color: currentCat?.color, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <CategoryIcon id={currentCat?.icon} size={14} /> {currentCat?.label}
+                            </span>
                             <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0A1128', marginBottom: 'var(--space-2)' }}>
                                 {selectedPlace.title}
                             </h2>
@@ -282,8 +298,8 @@ export default function ExplorePage() {
                             )}
 
                             <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                                <button className="btn btn-primary btn-block" style={{ cursor: 'pointer' }} onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${selectedPlace.title} ${selectedPlace.lat},${selectedPlace.lon}`)}`, '_blank')}>
-                                    🌍 Ver no Google Maps
+                                <button className="btn btn-primary btn-block" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }} onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${selectedPlace.title} ${selectedPlace.lat},${selectedPlace.lon}`)}`, '_blank')}>
+                                    <Globe size={18} /> Ver no Google Maps
                                 </button>
                             </div>
                         </div>

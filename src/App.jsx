@@ -13,27 +13,22 @@ import BottomNav from './components/BottomNav';
 import SettingsModal from './components/SettingsModal';
 import ProfileModal from './components/ProfileModal';
 
-import ChangePasswordModal from './components/ChangePasswordModal';
-
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/auth" replace />;
-  return <Outlet />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/auth" />;
 }
 
 function PublicRoute({ children }) {
   const { isAuthenticated } = useAuth();
-  if (isAuthenticated) return <Navigate to="/" replace />;
-  return children;
+  return isAuthenticated ? <Navigate to="/" /> : children;
 }
 
 function AuthenticatedLayout() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [passwordOpen, setPasswordOpen] = useState(false);
   const location = useLocation();
 
-  // Extract tripId from URL if present
+  // Extract tripId from URL if present to enable tabs in BottomNav
   const tripMatch = location.pathname.match(/\/trip\/([^/]+)/);
   const selectedTripId = tripMatch ? tripMatch[1] : null;
 
@@ -47,16 +42,13 @@ function AuthenticatedLayout() {
       {settingsOpen && (
         <SettingsModal
           onClose={() => setSettingsOpen(false)}
-          onProfileClick={() => { setSettingsOpen(false); setProfileOpen(true); }}
-          onPasswordClick={() => { setSettingsOpen(false); setPasswordOpen(true); }}
+          onProfileClick={() => {
+            setSettingsOpen(false);
+            setProfileOpen(true);
+          }}
         />
       )}
-      {profileOpen && (
-        <ProfileModal onClose={() => setProfileOpen(false)} />
-      )}
-      {passwordOpen && (
-        <ChangePasswordModal onClose={() => setPasswordOpen(false)} />
-      )}
+      {profileOpen && <ProfileModal onClose={() => setProfileOpen(false)} />}
     </>
   );
 }

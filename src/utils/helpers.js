@@ -33,20 +33,20 @@ export function getCountdown(startDate, endDate) {
     const end = new Date(endDate + 'T00:00:00');
 
     if (now > end) {
-        return { text: 'Viagem concluída', emoji: '✅', past: true };
+        return { text: 'Viagem concluída', icon: 'CheckCircle', past: true };
     }
     if (now >= start && now <= end) {
-        return { text: 'Em andamento!', emoji: '🛫', past: false };
+        return { text: 'Em andamento!', icon: 'PlaneTakeoff', past: false };
     }
 
     const diffMs = start - now;
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 1) return { text: 'Amanhã!', emoji: '🎉', past: false };
-    if (diffDays <= 7) return { text: `Em ${diffDays} dias`, emoji: '⏳', past: false };
-    if (diffDays <= 30) return { text: `Em ${diffDays} dias`, emoji: '📅', past: false };
+    if (diffDays === 1) return { text: 'Amanhã!', icon: 'PartyPopper', past: false };
+    if (diffDays <= 7) return { text: `Em ${diffDays} dias`, icon: 'Timer', past: false };
+    if (diffDays <= 30) return { text: `Em ${diffDays} dias`, icon: 'CalendarDays', past: false };
 
-    return { text: `Em ${diffDays} dias`, emoji: '🗓️', past: false };
+    return { text: `Em ${diffDays} dias`, icon: 'CalendarRange', past: false };
 }
 
 /**
@@ -89,16 +89,16 @@ export function getDateRange(startDate, endDate) {
 }
 
 /**
- * Get category info (icon, label)
+ * Get category info (icon name, emoji, label)
  */
 export const EXPENSE_CATEGORIES = [
-    { value: 'food', label: 'Alimentação', icon: '🍽️', class: 'badge-food' },
-    { value: 'transport', label: 'Transporte', icon: '🚗', class: 'badge-transport' },
-    { value: 'tickets', label: 'Passagens', icon: '✈️', class: 'badge-tickets' },
-    { value: 'tour', label: 'Passeio', icon: '🎭', class: 'badge-tour' },
-    { value: 'accommodation', label: 'Hospedagem', icon: '🏨', class: 'badge-accommodation' },
-    { value: 'shopping', label: 'Compras', icon: '🛍️', class: 'badge-shopping' },
-    { value: 'other', label: 'Outros', icon: '📌', class: 'badge-other' },
+    { value: 'food', label: 'Alimentação', icon: 'Utensils', class: 'badge-food' },
+    { value: 'transport', label: 'Transporte', icon: 'Car', class: 'badge-transport' },
+    { value: 'tickets', label: 'Passagens', icon: 'Plane', class: 'badge-tickets' },
+    { value: 'tour', label: 'Passeio', icon: 'MapPin', class: 'badge-tour' },
+    { value: 'accommodation', label: 'Hospedagem', icon: 'Hotel', class: 'badge-accommodation' },
+    { value: 'shopping', label: 'Compras', icon: 'ShoppingBag', class: 'badge-shopping' },
+    { value: 'other', label: 'Outros', icon: 'Tag', class: 'badge-other' },
 ];
 
 export function getCategoryInfo(value) {
@@ -127,20 +127,20 @@ export const CURRENCIES = [
 /**
  * Destination emoji helper
  */
-const DESTINATION_EMOJIS = {
-    paris: '🗼', tokyo: '🗼', london: '🇬🇧', new: '🗽', roma: '🏛️',
-    rome: '🏛️', barcelona: '🇪🇸', buenos: '🇦🇷', santiago: '🇨🇱',
-    lima: '🇵🇪', bogota: '🇨🇴', cancun: '🏖️', praia: '🏖️',
-    são: '🌆', rio: '🌴', salvador: '🎭', lisboa: '🇵🇹',
-    amsterdam: '🇳🇱', berlin: '🇩🇪', dubai: '🏙️', sydney: '🇦🇺',
+const DESTINATION_ICONS = {
+    paris: 'TowerControl', tokyo: 'TowerControl', london: 'Globe', new: 'Statue', roma: 'Church',
+    rome: 'Church', barcelona: 'Palmtree', buenos: 'Music', santiago: 'Mountain',
+    lima: 'Mountain', bogota: 'Mountain', cancun: 'Sun', praia: 'Sun',
+    são: 'Building2', rio: 'Palmtree', salvador: 'Mask', lisboa: 'Globe',
+    amsterdam: 'Wind', berlin: 'Building2', dubai: 'Building2', sydney: 'Waves',
 };
 
-export function getDestinationEmoji(destination) {
+export function getDestinationIcon(destination) {
     const lower = destination.toLowerCase();
-    for (const [key, emoji] of Object.entries(DESTINATION_EMOJIS)) {
-        if (lower.includes(key)) return emoji;
+    for (const [key, icon] of Object.entries(DESTINATION_ICONS)) {
+        if (lower.includes(key)) return icon;
     }
-    return '✈️';
+    return 'Plane';
 }
 
 /**
@@ -188,14 +188,14 @@ export async function fetchRealWeather(destination) {
         const temp = Math.round(weatherData.current_weather.temperature);
         const code = weatherData.current_weather.weathercode;
 
-        let condition = '☀️';
-        if (code === 0) condition = '☀️';
-        else if (code >= 1 && code <= 3) condition = '⛅';
-        else if (code >= 45 && code <= 48) condition = '🌫️';
-        else if (code >= 51 && code <= 67) condition = '🌧️';
-        else if (code >= 71 && code <= 77) condition = '❄️';
-        else if (code >= 80 && code <= 82) condition = '🌦️';
-        else if (code >= 95 && code <= 99) condition = '⛈️';
+        let condition = 'Sun';
+        if (code === 0) condition = 'Sun';
+        else if (code >= 1 && code <= 3) condition = 'CloudSun';
+        else if (code >= 45 && code <= 48) condition = 'CloudFog';
+        else if (code >= 51 && code <= 67) condition = 'CloudRain';
+        else if (code >= 71 && code <= 77) condition = 'Snowflake';
+        else if (code >= 80 && code <= 82) condition = 'CloudRainWind';
+        else if (code >= 95 && code <= 99) condition = 'CloudLightning';
 
         return { temp, condition };
     } catch (e) {

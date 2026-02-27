@@ -51,12 +51,10 @@
 }
 
 .home-welcome {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary-600);
     margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
 }
 
 .home-title {
@@ -262,10 +260,15 @@
     color: #4F46E5;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: var(--space-1) 0;
+    padding: var(--space-2) var(--space-3);
+    margin: calc(var(--space-2) * -1) calc(var(--space-3) * -1);
     background: none;
     border: none;
     cursor: pointer;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .explore-list {
@@ -434,7 +437,7 @@
 .text-muted-small {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #94a3b8;
+    color: var(--text-secondary);
 }
 
 .delete-btn-subtle {
@@ -447,6 +450,11 @@
     font-size: 1.1rem;
     z-index: 2;
     margin-right: var(--space-2);
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .delete-btn-subtle:hover {

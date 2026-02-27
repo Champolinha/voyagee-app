@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
 import { formatBRL, formatCurrency, getCategoryInfo, EXPENSE_CATEGORIES, CURRENCIES } from '../utils/helpers';
 import DonutChart, { BudgetBar } from './DonutChart';
+import { Wallet, CreditCard, Banknote, Plus, X, Utensils, Car, Plane, Map, Hotel, ShoppingBag, Tag } from 'lucide-react';
+
+const ICON_MAP = {
+    Utensils, Car, Plane, Map, Hotel, ShoppingBag, Tag
+};
+
+function CategoryIcon({ iconName, size = 18, className = "" }) {
+    const Icon = ICON_MAP[iconName] || Tag;
+    return <Icon size={size} className={className} />;
+}
 
 export default function ExpenseTab({ trip }) {
     const { getTripExpenses, getTripTotalBRL, addExpense, deleteExpense, updateTrip } = useData();
@@ -77,7 +87,7 @@ export default function ExpenseTab({ trip }) {
     });
     const chartSegments = Object.entries(catTotals).map(([cat, val]) => {
         const info = getCategoryInfo(cat);
-        return { label: `${info.icon} ${info.label}`, value: val };
+        return { label: `${info.emoji} ${info.label}`, value: val };
     });
 
     return (
@@ -99,7 +109,9 @@ export default function ExpenseTab({ trip }) {
             ) : (
                 <div className="card" style={{ textAlign: 'center', padding: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginBottom: 'var(--space-2)' }}>Defina um orçamento para acompanhar seus gastos</p>
-                    <button className="btn btn-secondary btn-sm" onClick={() => { setBudgetVal(''); setShowBudgetEdit(true); }}>💰 Definir Orçamento</button>
+                    <button className="btn btn-secondary btn-sm" onClick={() => { setBudgetVal(''); setShowBudgetEdit(true); }}>
+                        <Banknote size={14} /> Definir Orçamento
+                    </button>
                 </div>
             )}
 
@@ -113,9 +125,16 @@ export default function ExpenseTab({ trip }) {
 
             {/* Add Expense */}
             <div className="section-header stagger-2 animate-fade-in-up">
-                <h3 className="section-title">💳 Despesas</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                    <CreditCard size={18} className="text-primary-500" />
+                    <h3 className="section-title">Despesas</h3>
+                </div>
                 <button className="btn btn-primary btn-sm" onClick={() => setShowForm(!showForm)} id="add-expense-btn">
-                    {showForm ? '✕ Fechar' : '+ Despesa'}
+                    {showForm ? (
+                        <><X size={14} /> Fechar</>
+                    ) : (
+                        <><Plus size={14} /> Despesa</>
+                    )}
                 </button>
             </div>
 
@@ -129,7 +148,7 @@ export default function ExpenseTab({ trip }) {
                         <div className="form-group">
                             <label htmlFor="exp-cat" className="form-label">Categoria</label>
                             <select id="exp-cat" value={category} onChange={(e) => setCategory(e.target.value)}>
-                                {EXPENSE_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.icon} {c.label}</option>)}
+                                {EXPENSE_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                             </select>
                         </div>
                         <div className="form-row">
@@ -164,7 +183,7 @@ export default function ExpenseTab({ trip }) {
             {/* Expense List */}
             {expenses.length === 0 && !showForm ? (
                 <div className="empty-state">
-                    <div className="empty-state-icon">💰</div>
+                    <div className="empty-state-icon"><Wallet size={48} className="text-primary-400" /></div>
                     <h3 className="empty-state-title">Sem despesas</h3>
                     <p className="empty-state-text">Registre seus gastos para acompanhar o orçamento</p>
                 </div>
@@ -175,7 +194,9 @@ export default function ExpenseTab({ trip }) {
                         const isBRL = expense.original_currency === 'BRL';
                         return (
                             <div key={expense.id} className="expense-item">
-                                <div className={`expense-cat-icon ${catInfo.class}`}>{catInfo.icon}</div>
+                                <div className={`expense-cat-icon ${catInfo.class}`}>
+                                    <CategoryIcon iconName={catInfo.icon} size={20} />
+                                </div>
                                 <div className="expense-item-body">
                                     <div className="expense-item-title">{expense.title}</div>
                                     <div className="expense-item-category"><span className={`badge ${catInfo.class}`}>{catInfo.label}</span></div>
@@ -184,7 +205,7 @@ export default function ExpenseTab({ trip }) {
                                     <div className="expense-brl">{formatBRL(expense.converted_amount_BRL)}</div>
                                     {!isBRL && <div className="expense-original">{formatCurrency(expense.original_amount, expense.original_currency)}</div>}
                                 </div>
-                                <button className="delete-btn" onClick={() => deleteExpense(expense.id)} title="Remover">✕</button>
+                                <button className="delete-btn" onClick={() => deleteExpense(expense.id)} title="Remover"><X size={16} /></button>
                             </div>
                         );
                     })}
@@ -196,7 +217,7 @@ export default function ExpenseTab({ trip }) {
                 <div className="modal-overlay" onClick={() => setShowBudgetEdit(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '40dvh' }}>
                         <div className="modal-handle" />
-                        <h2 className="modal-title">💰 Orçamento da Viagem</h2>
+                        <h2 className="modal-title"><Banknote size={24} className="text-primary-500" /> Orçamento da Viagem</h2>
                         <div className="form-group">
                             <label className="form-label">Valor total em BRL (R$)</label>
                             <input type="number" step="0.01" min="0" placeholder="Ex: 5000.00" value={budgetVal} onChange={(e) => setBudgetVal(e.target.value)} autoFocus />

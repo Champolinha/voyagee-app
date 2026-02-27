@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { CURRENCIES } from '../utils/helpers';
+import { User, AlertTriangle, X, Check } from 'lucide-react';
 
 export default function ProfileModal({ onClose }) {
     const { currentUser, updateProfile } = useAuth();
@@ -30,8 +31,12 @@ export default function ProfileModal({ onClose }) {
             <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '85dvh' }}>
                 <div className="modal-handle" />
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-5)' }}>
-                    <h2 className="modal-title" style={{ marginBottom: 0 }}>👤 Meu Perfil</h2>
-                    <button className="btn btn-secondary btn-sm" onClick={onClose}>✕</button>
+                    <h2 className="modal-title" style={{ marginBottom: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <User size={24} className="text-primary-500" /> Meu Perfil
+                    </h2>
+                    <button className="btn btn-secondary btn-sm" onClick={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}>
+                        <X size={16} />
+                    </button>
                 </div>
 
                 {/* Avatar */}
@@ -88,8 +93,8 @@ export default function ProfileModal({ onClose }) {
 
                     {/* Emergency Contact */}
                     <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 'var(--space-4)', marginTop: 'var(--space-2)' }}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 'var(--space-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            🚨 Contato de emergência
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 'var(--space-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            <AlertTriangle size={16} className="text-warning-500" /> Contato de emergência
                         </div>
                         <div className="form-row">
                             <div className="form-group">
@@ -103,8 +108,8 @@ export default function ProfileModal({ onClose }) {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary btn-block btn-lg" id="profile-save-btn" style={{ marginTop: 'var(--space-2)' }}>
-                        {saved ? '✅ Salvo!' : 'Salvar Perfil'}
+                    <button type="submit" className="btn btn-primary btn-block btn-lg" id="profile-save-btn" style={{ marginTop: 'var(--space-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        {saved ? <><Check size={18} /> Salvo!</> : 'Salvar Perfil'}
                     </button>
                 </form>
             </div>

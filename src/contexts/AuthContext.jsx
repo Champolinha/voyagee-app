@@ -24,29 +24,33 @@ export function AuthProvider({ children }) {
         }
     }, [currentUser]);
 
-    const signup = (name, email, password) => {
+    const signup = (name, email) => {
         const users = getUsers();
-        if (users.find((u) => u.email === email)) throw new Error('E-mail já cadastrado.');
+        let user = users.find((u) => u.email === email);
+
+        if (user) {
+            // If user already exists locally, just log them in
+            setCurrentUser(user);
+            return user;
+        }
+
         const newUser = {
-            id: uuidv4(), name, email, password,
-            phone: '', birthdate: '', nationality: '', passport: '',
+            id: uuidv4(),
+            name,
+            email,
+            phone: '',
+            birthdate: '',
+            nationality: '',
+            passport: '',
             preferred_currency: 'BRL',
-            emergency_contact_name: '', emergency_contact_phone: '',
+            emergency_contact_name: '',
+            emergency_contact_phone: '',
         };
+
         users.push(newUser);
         saveUsers(users);
-        const { password: _, ...safe } = newUser;
-        setCurrentUser(safe);
-        return safe;
-    };
-
-    const login = (email, password) => {
-        const users = getUsers();
-        const user = users.find((u) => u.email === email && u.password === password);
-        if (!user) throw new Error('E-mail ou senha incorretos.');
-        const { password: _, ...safe } = user;
-        setCurrentUser(safe);
-        return safe;
+        setCurrentUser(newUser);
+        return newUser;
     };
 
     const updateProfile = (updates) => {
@@ -55,23 +59,13 @@ export function AuthProvider({ children }) {
         if (idx === -1) return;
         users[idx] = { ...users[idx], ...updates };
         saveUsers(users);
-        const { password: _, ...safe } = users[idx];
-        setCurrentUser(safe);
-    };
-
-    const changePassword = (currentPassword, newPassword) => {
-        const users = getUsers();
-        const idx = users.findIndex((u) => u.id === currentUser.id);
-        if (idx === -1) throw new Error('Usuário não encontrado.');
-        if (users[idx].password !== currentPassword) throw new Error('Senha atual incorreta.');
-        users[idx].password = newPassword;
-        saveUsers(users);
+        setCurrentUser(users[idx]);
     };
 
     const logout = () => setCurrentUser(null);
 
     return (
-        <AuthContext.Provider value={{ currentUser, signup, login, logout, updateProfile, changePassword, isAuthenticated: !!currentUser }}>
+        <AuthContext.Provider value={{ currentUser, signup, logout, updateProfile, isAuthenticated: !!currentUser }}>
             {children}
         </AuthContext.Provider>
     );

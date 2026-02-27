@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../contexts/DataContext';
 import { getDateRange, formatDateShort, EXPENSE_CATEGORIES, CURRENCIES } from '../utils/helpers';
 import LocationPicker, { getGoogleMapsUrl } from './LocationPicker';
+import { Map, Plus, X, Calendar, Banknote, Edit2, MapPin, ExternalLink } from 'lucide-react';
 
 export default function ItineraryTab({ trip }) {
     const { getTripItinerary, addItineraryItem, updateItineraryItem, deleteItineraryItem, addExpense } = useData();
@@ -141,16 +142,19 @@ export default function ItineraryTab({ trip }) {
     return (
         <div className="animate-fade-in-up">
             <div className="section-header">
-                <h3 className="section-title">📅 Roteiro</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                    <Calendar size={18} className="text-primary-500" />
+                    <h3 className="section-title">Roteiro</h3>
+                </div>
                 <button className="btn btn-primary btn-sm" onClick={() => { if (showForm) resetForm(); else setShowForm(true); }} id="add-itinerary-btn">
-                    {showForm ? '✕ Fechar' : '+ Atividade'}
+                    {showForm ? <><X size={14} /> Fechar</> : <><Plus size={14} /> Atividade</>}
                 </button>
             </div>
 
             {showForm && (
                 <div className="card animate-fade-in-up" style={{ marginBottom: 'var(--space-5)', borderColor: 'var(--primary-200)' }}>
-                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--primary-600)' }}>
-                        {editingItem ? '✏️ Editar Atividade' : '✨ Nova Atividade'}
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--primary-600)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {editingItem ? <><Edit2 size={14} /> Editar Atividade</> : <><Plus size={14} /> Nova Atividade</>}
                     </h4>
                     <form onSubmit={handleSubmit}>
                         {destinations.length > 0 && (
@@ -188,7 +192,7 @@ export default function ItineraryTab({ trip }) {
                                     padding: 'var(--space-3)', background: 'var(--bg-tertiary)',
                                     borderRadius: 'var(--radius-lg)', border: '1.5px solid var(--primary-200)',
                                 }}>
-                                    <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>📍</span>
+                                    <MapPin size={18} className="text-primary-500" style={{ flexShrink: 0 }} />
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', wordBreak: 'break-word' }}>
                                             {selectedLocation.address}
@@ -200,11 +204,11 @@ export default function ItineraryTab({ trip }) {
                                     <div style={{ display: 'flex', gap: 'var(--space-1)', flexShrink: 0 }}>
                                         <button type="button" className="btn btn-secondary btn-sm"
                                             onClick={() => setShowMapPicker(true)} style={{ fontSize: '0.7rem' }}>
-                                            ✏️
+                                            <Edit2 size={12} />
                                         </button>
                                         <button type="button" className="btn btn-secondary btn-sm"
                                             onClick={() => setSelectedLocation(null)} style={{ fontSize: '0.7rem' }}>
-                                            ✕
+                                            <X size={12} />
                                         </button>
                                     </div>
                                 </div>
@@ -215,7 +219,7 @@ export default function ItineraryTab({ trip }) {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         gap: 'var(--space-2)', padding: 'var(--space-3)',
                                     }}>
-                                    🗺️ Abrir Mapa para Escolher Local
+                                    <Map size={16} /> Abrir Mapa para Escolher Local
                                 </button>
                             )}
                         </div>
@@ -229,7 +233,7 @@ export default function ItineraryTab({ trip }) {
                             <div style={{ marginBottom: 'var(--space-4)', padding: 'var(--space-3)', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--primary-200)' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
                                     <input type="checkbox" checked={hasExpense} onChange={(e) => setHasExpense(e.target.checked)} />
-                                    💰 Incluir como despesa?
+                                    <Banknote size={14} /> Incluir como despesa?
                                 </label>
                                 {hasExpense && (
                                     <div className="animate-fade-in-up" style={{ marginTop: 'var(--space-3)' }}>
@@ -248,7 +252,7 @@ export default function ItineraryTab({ trip }) {
                                         <div className="form-group">
                                             <label className="form-label">Categoria</label>
                                             <select value={expenseCategory} onChange={(e) => setExpenseCategory(e.target.value)}>
-                                                {EXPENSE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.icon} {c.label}</option>)}
+                                                {EXPENSE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                                             </select>
                                         </div>
                                         {expenseCurrency !== 'BRL' && (
@@ -280,7 +284,7 @@ export default function ItineraryTab({ trip }) {
             {/* Timeline */}
             {items.length === 0 && !showForm ? (
                 <div className="empty-state">
-                    <div className="empty-state-icon">🗺️</div>
+                    <div className="empty-state-icon"><Map size={48} className="text-primary-400" /></div>
                     <h3 className="empty-state-title">Sem atividades</h3>
                     <p className="empty-state-text">Adicione atividades ao seu roteiro diário</p>
                 </div>
@@ -303,8 +307,10 @@ export default function ItineraryTab({ trip }) {
                                                 {item.time && <div className="timeline-time">{item.time}</div>}
                                                 <div className="timeline-title">{item.title}</div>
                                                 {item.destination && (
-                                                    <div style={{ marginTop: 2 }}>
-                                                        <span className="badge badge-primary" style={{ fontSize: '0.6rem' }}>📍 {getDestLabel(item.destination)}</span>
+                                                    <div style={{ marginTop: 2, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                        <span className="badge badge-primary" style={{ fontSize: '0.6rem', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                                            <MapPin size={8} /> {getDestLabel(item.destination)}
+                                                        </span>
                                                     </div>
                                                 )}
 
@@ -317,14 +323,10 @@ export default function ItineraryTab({ trip }) {
                                                         className="timeline-location-link"
                                                         title="Abrir no Google Maps"
                                                     >
-                                                        <span className="location-pin-icon">📍</span>
+                                                        <MapPin size={12} className="text-primary-500" />
                                                         <span className="location-address">{item.location}</span>
                                                         <span className="location-maps-badge">
-                                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                                                <polyline points="15 3 21 3 21 9" />
-                                                                <line x1="10" y1="14" x2="21" y2="3" />
-                                                            </svg>
+                                                            <ExternalLink size={10} />
                                                         </span>
                                                     </a>
                                                 )}
@@ -332,8 +334,8 @@ export default function ItineraryTab({ trip }) {
                                                 {item.description && <div className="timeline-desc">{item.description}</div>}
                                             </div>
                                             <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
-                                                <button className="delete-btn" onClick={() => handleEdit(item)} title="Editar" style={{ color: 'var(--primary-500)' }}>✏️</button>
-                                                <button className="delete-btn" onClick={() => deleteItineraryItem(item.id)} title="Remover">✕</button>
+                                                <button className="delete-btn" onClick={() => handleEdit(item)} title="Editar" style={{ color: 'var(--primary-500)' }}><Edit2 size={14} /></button>
+                                                <button className="delete-btn" onClick={() => deleteItineraryItem(item.id)} title="Remover"><X size={14} /></button>
                                             </div>
                                         </div>
                                     </div>
