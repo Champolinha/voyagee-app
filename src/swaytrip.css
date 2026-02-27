@@ -1,0 +1,510 @@
+/* ============================================
+   SwayTrip - Modern Home Layout (Glassmorphism)
+   ============================================ */
+
+.home-layout {
+    position: relative;
+    min-height: 100dvh;
+    background-color: #FAFAFB;
+    color: #0A1128;
+    overflow-x: hidden;
+    font-family: 'Plus Jakarta Sans', var(--font-sans, sans-serif);
+    padding-bottom: calc(var(--bottom-nav-height) + var(--space-8));
+}
+
+/* Background Blurs */
+.bg-decorator {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.decorator-top-left {
+    top: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: rgba(224, 242, 254, 0.7);
+    /* pastel-blue */
+}
+
+.decorator-center-right {
+    top: 40%;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 247, 237, 0.7);
+    /* warm-glow */
+    filter: blur(100px);
+}
+
+.home-header {
+    padding: 3rem var(--space-6) var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+}
+
+.home-welcome {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.home-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0A1128;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+}
+
+.header-text-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home-logo-container {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    width: 65px;
+    height: 65px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.home-logo-container:active {
+    transform: scale(0.95);
+}
+
+.header-logo {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.home-avatar {
+    /* Kept for other uses if any, but simplified */
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    width: 50px;
+    height: 50px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0A1128;
+}
+
+.home-main {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.home-section {
+    padding: 0 var(--space-6);
+}
+
+/* Glass Card */
+.glass-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 2.5rem;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(224, 242, 254, 0.4), rgba(255, 247, 237, 0.4));
+    z-index: -1;
+}
+
+.ethereal-shadow {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Next Activity Card (NAC) */
+.next-activity-card {
+    padding: var(--space-6);
+}
+
+.nac-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-6);
+}
+
+.nac-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: 12px;
+    letter-spacing: -0.02em;
+    color: #0A1128;
+}
+
+.glass-pill {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.border-frost {
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.weather-temp {
+    font-weight: 800;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.nac-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.nac-info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.nac-info-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.nac-info-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0A1128;
+}
+
+.nac-info-divider {
+    width: 1px;
+    height: 30px;
+    background: #e2e8f0;
+}
+
+.nac-image-container {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+.nac-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nac-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 17, 40, 0.3), transparent);
+}
+
+/* Explore Section */
+.section-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.section-title-compact {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0A1128;
+    letter-spacing: -0.02em;
+}
+
+.text-btn {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #4F46E5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--space-1) 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.explore-list {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    margin: 0 calc(var(--space-6) * -1);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+    scroll-snap-type: x mandatory;
+}
+
+.explore-card {
+    flex: 0 0 calc(40% - var(--space-2));
+    min-width: 140px;
+    scroll-snap-align: start;
+}
+
+.explore-image-wrapper {
+    aspect-ratio: 4 / 5;
+    border-radius: 2rem;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.explore-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.group:hover .group-hover-scale {
+    transform: scale(1.05);
+}
+
+.group:active .group-active\:scale-95 {
+    transform: scale(0.95);
+}
+
+.explore-title {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #0A1128;
+    text-align: center;
+}
+
+/* List Items */
+.trips-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-bottom: var(--space-12);
+    /* Space for the FAB */
+}
+
+.trip-list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: 14px;
+    padding-right: var(--space-1);
+    /* Adjusted to leave some edge space */
+    border-radius: 1.75rem;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    position: relative;
+}
+
+.trip-list-img-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #E0F2FE, #FFF7ED);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trip-list-emoji {
+    font-size: 1.8rem;
+}
+
+.trip-list-content {
+    flex: 1;
+}
+
+.trip-list-name {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #0A1128;
+    margin-bottom: 2px;
+    transition: color 0.2s ease;
+}
+
+.group:hover .group-hover-text-accent,
+.group:active .group-active\:text-accent {
+    color: #4F46E5;
+}
+
+.trip-list-dates {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.trip-list-action {
+    text-align: right;
+}
+
+.trip-countdown-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(79, 70, 229, 0.08);
+    color: #4F46E5;
+    display: inline-block;
+}
+
+.trip-countdown-badge.past {
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+/* Glass FAB */
+.glass-fab {
+    position: fixed !important;
+    bottom: calc(var(--bottom-nav-height) + var(--space-4)) !important;
+    right: var(--space-4) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4)) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    padding: 6px !important;
+    width: auto !important;
+    height: auto !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    color: white !important;
+    z-index: 50 !important;
+}
+
+.fab-inner {
+    width: 52px;
+    height: 52px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #4F46E5, #3b82f6) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.8rem !important;
+    font-weight: 300 !important;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4) !important;
+    transition: transform 0.25s ease !important;
+    line-height: 1 !important;
+}
+
+/* Minor overrides */
+.text-muted-small {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.delete-btn-subtle {
+    padding: 12px;
+    opacity: 0.4;
+    transition: all 0.2s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    z-index: 2;
+    margin-right: var(--space-2);
+}
+
+.delete-btn-subtle:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.glass-modal {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .home-layout {
+    background-color: #0A1128;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .home-title,
+[data-theme="dark"] .nac-title,
+[data-theme="dark"] .section-title-compact,
+[data-theme="dark"] .explore-title,
+[data-theme="dark"] .trip-list-name,
+[data-theme="dark"] .nac-info-value {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .glass-card,
+[data-theme="dark"] .trip-list-item,
+[data-theme="dark"] .glass-pill,
+[data-theme="dark"] .glass-modal {
+    background: rgba(17, 25, 40, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .glass-card-bg {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(10, 15, 30, 0.8));
+}
+
+[data-theme="dark"] .home-avatar {
+    background: rgba(30, 41, 59, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .decorator-top-left {
+    background: rgba(30, 60, 120, 0.4);
+}
+
+[data-theme="dark"] .decorator-center-right {
+    background: rgba(80, 40, 120, 0.3);
+}
+
+[data-theme="dark"] .glass-fab {
+    background: rgba(30, 41, 59, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+}

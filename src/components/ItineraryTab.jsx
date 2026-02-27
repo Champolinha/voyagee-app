@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useData } from '../contexts/DataContext';
-import { getDateRange, formatDateShort } from '../utils/helpers';
+import { getDateRange, formatDateShort, EXPENSE_CATEGORIES, CURRENCIES } from '../utils/helpers';
 import LocationPicker, { getGoogleMapsUrl } from './LocationPicker';
 
 export default function ItineraryTab({ trip }) {
-    const { getTripItinerary, addItineraryItem, deleteItineraryItem } = useData();
+    const { getTripItinerary, addItineraryItem, updateItineraryItem, deleteItineraryItem, addExpense } = useData();
     const items = getTripItinerary(trip.id);
 
     const [showForm, setShowForm] = useState(false);
@@ -13,6 +13,17 @@ export default function ItineraryTab({ trip }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [destination, setDestination] = useState('');
+
+    // Expense integration state
+    const [hasExpense, setHasExpense] = useState(false);
+    const [expenseAmount, setExpenseAmount] = useState('');
+    const [expenseCurrency, setExpenseCurrency] = useState('BRL');
+    const [expenseCategory, setExpenseCategory] = useState('other');
+    const [exchangeRate, setExchangeRate] = useState(1);
+    const [isLoadingRate, setIsLoadingRate] = useState(false);
+
+    // Edit state
+    const [editingItem, setEditingItem] = useState(null); // id of item being edited
 
     // Map location state
     const [showMapPicker, setShowMapPicker] = useState(false);
@@ -29,21 +40,89 @@ export default function ItineraryTab({ trip }) {
         grouped[item.day_date].push(item);
     });
 
-    const handleSubmit = (e) => {
+    const fetchExchangeRate = async (currency) => {
+        if (currency === 'BRL') {
+            setExchangeRate(1);
+            return 1;
+        }
+        setIsLoadingRate(true);
+        try {
+            const res = await fetch(`https://open.er-api.com/v6/latest/${currency}`);
+            const data = await res.json();
+            if (data?.rates?.BRL) {
+                setExchangeRate(data.rates.BRL);
+                return data.rates.BRL;
+            }
+        } catch (err) {
+            console.error("Erro ao puxar cotação:", err);
+        } finally {
+            setIsLoadingRate(false);
+        }
+        return 1;
+    };
+
+    const handleCurrencyChange = (val) => {
+        setExpenseCurrency(val);
+        fetchExchangeRate(val);
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!title.trim() || !dayDate) return;
-        addItineraryItem({
+
+        const itData = {
             trip_id: trip.id, day_date: dayDate, time: time || null,
             title: title.trim(),
             location: selectedLocation?.address || null,
+            place_name: selectedLocation?.name || null,
             lat: selectedLocation?.lat || null,
             lng: selectedLocation?.lng || null,
             description: description.trim() || null,
             destination: destination || null,
-        });
-        setTitle(''); setTime(''); setDescription('');
-        setSelectedLocation(null);
+        };
+
+        if (editingItem) {
+            updateItineraryItem(editingItem, itData);
+        } else {
+            addItineraryItem(itData);
+
+            // Add auto-expense if selected (only on creation for now to avoid complexity)
+            if (hasExpense && expenseAmount) {
+                let rate = exchangeRate;
+                if (expenseCurrency !== 'BRL' && exchangeRate === 1) {
+                    rate = await fetchExchangeRate(expenseCurrency);
+                }
+                addExpense({
+                    trip_id: trip.id,
+                    title: `Atividade: ${title.trim()}`,
+                    original_amount: parseFloat(expenseAmount),
+                    original_currency: expenseCurrency,
+                    converted_amount_BRL: parseFloat(expenseAmount) * rate,
+                    category: expenseCategory,
+                });
+            }
+        }
+
+        resetForm();
+    };
+
+    const resetForm = () => {
+        setTitle(''); setTime(''); setDescription(''); setDestination('');
+        setSelectedLocation(null); setEditingItem(null); setHasExpense(false);
+        setExpenseAmount(''); setExpenseCurrency('BRL'); setExpenseCategory('other');
         setShowForm(false);
+    };
+
+    const handleEdit = (item) => {
+        setEditingItem(item.id);
+        setTitle(item.title || '');
+        setTime(item.time || '');
+        setDayDate(item.day_date);
+        setDescription(item.description || '');
+        setDestination(item.destination || '');
+        setSelectedLocation(item.location ? { address: item.location, lat: item.lat, lng: item.lng, name: item.place_name } : null);
+        setHasExpense(false); // Link expense only on creation or as a separate action
+        setShowForm(true);
     };
 
     const formatDayHeader = (dateStr) => {
@@ -63,13 +142,16 @@ export default function ItineraryTab({ trip }) {
         <div className="animate-fade-in-up">
             <div className="section-header">
                 <h3 className="section-title">📅 Roteiro</h3>
-                <button className="btn btn-primary btn-sm" onClick={() => setShowForm(!showForm)} id="add-itinerary-btn">
+                <button className="btn btn-primary btn-sm" onClick={() => { if (showForm) resetForm(); else setShowForm(true); }} id="add-itinerary-btn">
                     {showForm ? '✕ Fechar' : '+ Atividade'}
                 </button>
             </div>
 
             {showForm && (
                 <div className="card animate-fade-in-up" style={{ marginBottom: 'var(--space-5)', borderColor: 'var(--primary-200)' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--primary-600)' }}>
+                        {editingItem ? '✏️ Editar Atividade' : '✨ Nova Atividade'}
+                    </h4>
                     <form onSubmit={handleSubmit}>
                         {destinations.length > 0 && (
                             <div className="form-group">
@@ -142,7 +224,46 @@ export default function ItineraryTab({ trip }) {
                             <label htmlFor="it-desc" className="form-label">Descrição</label>
                             <textarea id="it-desc" placeholder="Detalhes extras..." value={description} onChange={(e) => setDescription(e.target.value)} style={{ minHeight: 60 }} />
                         </div>
-                        <button type="submit" className="btn btn-primary btn-block" id="submit-itinerary-item">Adicionar ao Roteiro</button>
+
+                        {!editingItem && (
+                            <div style={{ marginBottom: 'var(--space-4)', padding: 'var(--space-3)', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--primary-200)' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
+                                    <input type="checkbox" checked={hasExpense} onChange={(e) => setHasExpense(e.target.checked)} />
+                                    💰 Incluir como despesa?
+                                </label>
+                                {hasExpense && (
+                                    <div className="animate-fade-in-up" style={{ marginTop: 'var(--space-3)' }}>
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label className="form-label">Valor</label>
+                                                <input type="number" step="0.01" placeholder="0.00" value={expenseAmount} onChange={(e) => setExpenseAmount(e.target.value)} required={hasExpense} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label">Moeda</label>
+                                                <select value={expenseCurrency} onChange={(e) => handleCurrencyChange(e.target.value)}>
+                                                    {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.code}</option>)}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">Categoria</label>
+                                            <select value={expenseCategory} onChange={(e) => setExpenseCategory(e.target.value)}>
+                                                {EXPENSE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.icon} {c.label}</option>)}
+                                            </select>
+                                        </div>
+                                        {expenseCurrency !== 'BRL' && (
+                                            <p style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>
+                                                {isLoadingRate ? 'Consultando câmbio...' : `Câmbio: 1 ${expenseCurrency} = R$ ${exchangeRate.toFixed(2)}`}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <button type="submit" className="btn btn-primary btn-block" id="submit-itinerary-item">
+                            {editingItem ? 'Salvar Alterações' : 'Adicionar ao Roteiro'}
+                        </button>
                     </form>
                 </div>
             )}
@@ -190,7 +311,7 @@ export default function ItineraryTab({ trip }) {
                                                 {/* Location with Google Maps link */}
                                                 {item.location && (
                                                     <a
-                                                        href={item.lat && item.lng ? getGoogleMapsUrl(item.lat, item.lng) : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`}
+                                                        href={getGoogleMapsUrl(item.lat, item.lng, item.place_name || item.location)}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="timeline-location-link"
@@ -210,7 +331,10 @@ export default function ItineraryTab({ trip }) {
 
                                                 {item.description && <div className="timeline-desc">{item.description}</div>}
                                             </div>
-                                            <button className="delete-btn" onClick={() => deleteItineraryItem(item.id)} title="Remover">✕</button>
+                                            <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
+                                                <button className="delete-btn" onClick={() => handleEdit(item)} title="Editar" style={{ color: 'var(--primary-500)' }}>✏️</button>
+                                                <button className="delete-btn" onClick={() => deleteItineraryItem(item.id)} title="Remover">✕</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

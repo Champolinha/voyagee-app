@@ -1,22 +1,29 @@
+@import './swaytrip.css';
+
 /* ============================================
    VOYAGEE — Design System & Global Styles
    ============================================ */
 
 /* CSS Custom Properties — Light & Dark Themes */
+/* CSS Custom Properties — SwayTrip Theme (Light) */
 :root {
-  /* Color Palette */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
+  /* SwayTrip Brand Palette */
+  --primary-50: #f0f7ff;
+  --primary-100: #e0f0fe;
+  --primary-200: #b9dcfd;
+  --primary-300: #7cc0fc;
+  --primary-400: #36a5f9;
+  --primary-500: #0d8cf1;
+  --primary-600: #016ece;
+  --primary-700: #0257a5;
 
-  --accent-400: #a78bfa;
-  --accent-500: #8b5cf6;
-  --accent-600: #7c3aed;
+  /* SwayTrip Gradient Accents (Peach to Lavender) */
+  --accent-400: #c2bafe;
+  --accent-500: #aba0fc;
+  --accent-600: #9381f7;
+
+  --brand-peach: #fae1c5;
+  --brand-blue: #a3cafe;
 
   --success-400: #4ade80;
   --success-500: #22c55e;
@@ -26,28 +33,28 @@
   --danger-500: #ef4444;
 
   /* Semantic Colors — Light Mode */
-  --bg-primary: #f8fafc;
+  --bg-primary: #f8fbfd;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f8fafc;
-  --bg-overlay: rgba(15, 23, 42, 0.5);
+  --bg-tertiary: #f0f5fa;
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.9);
+  --bg-overlay: rgba(15, 23, 42, 0.3);
   --bg-input: #ffffff;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
   --text-tertiary: #94a3b8;
   --text-inverse: #ffffff;
   --text-on-primary: #ffffff;
 
-  --border-color: #e2e8f0;
+  --border-color: rgba(203, 213, 225, 0.5);
   --border-color-focus: var(--primary-500);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 40, 80, 0.05), 0 2px 4px -2px rgba(0, 40, 80, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 40, 80, 0.06), 0 4px 6px -4px rgba(0, 40, 80, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 40, 80, 0.08), 0 8px 10px -6px rgba(0, 40, 80, 0.04);
+  --shadow-glow: 0 8px 32px rgba(163, 202, 254, 0.4);
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -64,8 +71,8 @@
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
   --radius-full: 9999px;
 
   /* Transitions */
@@ -77,29 +84,32 @@
   --bottom-nav-height: 70px;
 }
 
-/* Dark Mode */
+/* SwayTrip Theme (Dark) / Glassmorphism Focus */
 [data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #1e293b;
-  --bg-card: #1e293b;
-  --bg-card-hover: #263348;
-  --bg-overlay: rgba(0, 0, 0, 0.7);
-  --bg-input: #1e293b;
+  --bg-primary: #05080f;
+  /* Deeper navy-black */
+  --bg-secondary: #0a0f1d;
+  --bg-tertiary: #111827;
+  --bg-card: rgba(17, 25, 40, 0.75);
+  --bg-card-hover: rgba(23, 33, 53, 0.9);
+  --bg-overlay: rgba(0, 0, 0, 0.85);
+  --bg-input: #111827;
 
+  /* Luminous text for contrast */
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-tertiary: #64748b;
-  --text-inverse: #0f172a;
+  --text-inverse: #05080f;
 
-  --border-color: #334155;
+  --border-color: rgba(255, 255, 255, 0.08);
+  /* Frosted glass border */
   --border-color-focus: var(--primary-400);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 20px rgba(96, 165, 250, 0.2);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.8);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 35px 60px -15px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.2);
 }
 
 /* ============================================
@@ -204,6 +214,8 @@ select {
   border: 1px solid var(--border-color);
   padding: var(--space-5);
   box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-normal);
 }
 

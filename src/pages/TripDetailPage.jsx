@@ -16,6 +16,10 @@ export default function TripDetailPage() {
     const [destDep, setDestDep] = useState('');
     const [showBudgetEdit, setShowBudgetEdit] = useState(false);
     const [budgetVal, setBudgetVal] = useState('');
+    const [showTripEdit, setShowTripEdit] = useState(false);
+    const [editName, setEditName] = useState('');
+    const [editStart, setEditStart] = useState('');
+    const [editEnd, setEditEnd] = useState('');
 
     if (!trip) {
         return (
@@ -58,18 +62,35 @@ export default function TripDetailPage() {
         setShowBudgetEdit(false);
     };
 
+    const handleTripEditSave = (e) => {
+        e.preventDefault();
+        if (!editName.trim() || !editStart || !editEnd) return;
+        updateTrip(tripId, { name: editName.trim(), start_date: editStart, end_date: editEnd });
+        setShowTripEdit(false);
+    };
+
     return (
         <div>
             {/* Hero Header */}
             <div className="trip-detail-header">
                 <div style={{ position: 'relative', zIndex: 1 }}>
                     <button className="trip-detail-back" onClick={() => navigate('/')} id="back-to-home">← Voltar</button>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                        <span style={{ fontSize: '2rem' }}>{trip.destinations?.length > 0 ? getDestinationEmoji(trip.destinations[0].name) : '✈️'}</span>
-                        <div>
-                            <h1 className="trip-detail-destination">{trip.name}</h1>
-                            <p className="trip-detail-dates">{formatDate(trip.start_date)} — {formatDate(trip.end_date)}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-3)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                            <span style={{ fontSize: '2rem' }}>{trip.destinations?.length > 0 ? getDestinationEmoji(trip.destinations[0].name) : '✈️'}</span>
+                            <div>
+                                <h1 className="trip-detail-destination">{trip.name}</h1>
+                                <p className="trip-detail-dates">{formatDate(trip.start_date)} — {formatDate(trip.end_date)}</p>
+                            </div>
                         </div>
+                        <button className="btn btn-secondary btn-sm" onClick={() => {
+                            setEditName(trip.name);
+                            setEditStart(trip.start_date);
+                            setEditEnd(trip.end_date);
+                            setShowTripEdit(true);
+                        }} style={{ padding: '4px 8px', fontSize: '0.7rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>
+                            ✏️ Editar
+                        </button>
                     </div>
                     <div className="trip-detail-countdown">{countdown.emoji} {countdown.text}</div>
                 </div>
@@ -201,6 +222,35 @@ export default function TripDetailPage() {
                             <button className="btn btn-secondary btn-block" onClick={() => setShowBudgetEdit(false)}>Cancelar</button>
                             <button className="btn btn-primary btn-block" onClick={handleBudgetSave}>Salvar</button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {/* Trip Edit Modal */}
+            {showTripEdit && (
+                <div className="modal-overlay" onClick={() => setShowTripEdit(false)}>
+                    <div className="modal-content glass-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-handle" />
+                        <h2 className="modal-title">✏️ Editar Viagem</h2>
+                        <form onSubmit={handleTripEditSave}>
+                            <div className="form-group">
+                                <label className="form-label">Nome da viagem</label>
+                                <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} required />
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label">Início</label>
+                                    <input type="date" value={editStart} onChange={(e) => setEditStart(e.target.value)} required />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Fim</label>
+                                    <input type="date" value={editEnd} onChange={(e) => setEditEnd(e.target.value)} required min={editStart} />
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+                                <button type="button" className="btn btn-secondary btn-block" onClick={() => setShowTripEdit(false)}>Cancelar</button>
+                                <button type="submit" className="btn btn-primary btn-block">Salvar Alterações</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

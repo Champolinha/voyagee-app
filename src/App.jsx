@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DataProvider } from './contexts/DataContext';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
+import ExplorePage from './pages/ExplorePage';
 import TripDetailPage from './pages/TripDetailPage';
 import ItineraryPage from './pages/ItineraryPage';
 import ExpensesPage from './pages/ExpensesPage';
@@ -67,6 +68,7 @@ function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AuthenticatedLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/trip/:tripId" element={<TripDetailPage />} />
           <Route path="/trip/:tripId/itinerary" element={<ItineraryPage />} />
           <Route path="/trip/:tripId/expenses" element={<ExpensesPage />} />

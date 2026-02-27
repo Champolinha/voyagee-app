@@ -101,6 +101,13 @@ export function DataProvider({ children }) {
         return newItem;
     };
 
+    const updateItineraryItem = (itemId, updates) => {
+        setData((p) => ({
+            ...p,
+            itineraryItems: p.itineraryItems.map((i) => (i.id === itemId ? { ...i, ...updates } : i)),
+        }));
+    };
+
     const deleteItineraryItem = (itemId) => {
         setData((p) => ({ ...p, itineraryItems: p.itineraryItems.filter((i) => i.id !== itemId) }));
     };
@@ -130,7 +137,7 @@ export function DataProvider({ children }) {
         <DataContext.Provider value={{
             trips: data.trips, addTrip, updateTrip, deleteTrip, getTrip,
             addDestination, removeDestination,
-            addItineraryItem, deleteItineraryItem, getTripItinerary,
+            addItineraryItem, updateItineraryItem, deleteItineraryItem, getTripItinerary,
             addExpense, deleteExpense, getTripExpenses, getTripTotalBRL,
         }}>
             {children}

@@ -32,26 +32,6 @@ export default function SettingsModal({ onClose, onProfileClick, onPasswordClick
                     <span style={{ color: 'var(--text-tertiary)' }}>→</span>
                 </button>
 
-                {/* Theme Toggle */}
-                <button className="settings-item" onClick={toggleTheme} id="settings-theme-btn">
-                    <div className="settings-item-icon">{theme === 'dark' ? '☀️' : '🌙'}</div>
-                    <div className="settings-item-body">
-                        <div className="settings-item-label">{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</div>
-                        <div className="settings-item-sub">Alternar aparência</div>
-                    </div>
-                    <div style={{
-                        width: 44, height: 24, borderRadius: 'var(--radius-full)', padding: 2,
-                        background: theme === 'dark' ? 'var(--primary-500)' : 'var(--border-color)',
-                        transition: 'background var(--transition-fast)', display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: theme === 'dark' ? 'flex-end' : 'flex-start',
-                    }}>
-                        <div style={{
-                            width: 20, height: 20, borderRadius: '50%', background: 'white',
-                            boxShadow: 'var(--shadow-sm)', transition: 'all var(--transition-fast)',
-                        }} />
-                    </div>
-                </button>
 
                 {/* Logout */}
                 <button className="settings-item" onClick={logout} id="settings-logout-btn"

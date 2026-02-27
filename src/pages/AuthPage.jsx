@@ -33,8 +33,7 @@ export default function AuthPage() {
         <div className="auth-container">
             <div className="animate-fade-in-up">
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>✈️</div>
-                    <h1 className="auth-logo">Voyagee</h1>
+                    <img src="/app-logo.png" alt="Voyagee Logo" style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto 1.5rem', display: 'block', boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }} />
                     <p className="auth-subtitle">Planeje suas viagens com facilidade</p>
                 </div>
 
